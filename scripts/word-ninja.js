@@ -1,3 +1,8 @@
-const letter = document.querySelectorAll(".scoreboard-letter");
+const letters = document.querySelectorAll(".scoreboard-letter");
+const loadingDiv = document.querySelector(".info-bar");
 
-console.log(letter);
+async function init() {
+  document.addEventListener("keydown", e);
+}
+
+init();
