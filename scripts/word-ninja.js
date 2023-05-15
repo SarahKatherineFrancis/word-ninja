@@ -37,6 +37,11 @@ async function init() {
     currentGuess = "";
   }
 
+  function backspace() {
+    currentGuess = currentGuess.substring(0, currentGuess.length - 1);
+    letters[ANSWER_LENGTH * currentRow + currentGuess.length].innerText = "";
+  }
+
   // Event listener for keydown events
   document.addEventListener("keydown", function handleKeyPress(event) {
     const action = event.key;
