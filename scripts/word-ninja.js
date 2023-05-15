@@ -16,6 +16,7 @@ async function init() {
   const res = await fetch("https://words.dev-apis.com/word-of-the-day");
   const resObj = await res.json();
   const word = resObj.word.toUpperCase();
+  setLoading(false);
 
   console.log(word);
 
@@ -69,6 +70,10 @@ async function init() {
 // Function to check if a character is a letter
 function isLetter(letter) {
   return /^[a-zA-Z]$/.test(letter);
+}
+
+function setLoading(isLoading) {
+  loadingDiv.classList.toggle("hidden", !isLoading);
 }
 
 // Call the init function to initialize the functionality
