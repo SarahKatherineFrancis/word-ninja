@@ -13,6 +13,12 @@ async function init() {
   let currentGuess = "";
   let currentRow = 0;
 
+  const res = await fetch("https://words.dev-apis.com/word-of-the-day");
+  const resObj = await res.json();
+  const word = resObj.word.toUpperCase();
+
+  console.log(word);
+
   // Function to add a letter to the current guess
   function addLetter(letter) {
     // If the current guess is not yet complete, add the letter to the end
