@@ -44,18 +44,25 @@ async function init() {
       return;
     }
 
+    if (currentGuess === word) {
+      alert("You win");
+      return;
+    }
+
     const guessParts = currentGuess.split("");
+    const map = makeMap(wordParts);
 
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       if (guessParts[i] === wordParts[i]) {
         letters[currentRow * ANSWER_LENGTH + i].classList.add("correct");
+        map[guessParts[i]]--;
       }
     }
 
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       if (guessParts[i] === wordParts[i]) {
         // do nothing
-      } else if (wordParts.includes(guessParts[i])) {
+      } else if (wordParts.includes(guessParts[i]) && map[guessParts[i]] > 0) {
         letters[currentRow * ANSWER_LENGTH + i].classList.add("close");
       } else {
         letters[currentRow * ANSWER_LENGTH + i].classList.add("wrong");
@@ -98,6 +105,19 @@ function isLetter(letter) {
 // Function to toggle the loading state
 function setLoading(isLoading) {
   loadingDiv.classList.toggle("hidden", !isLoading);
+}
+
+function makeMap(array) {
+  const obj = {};
+  for (let i = 0; i < array.length; i++) {
+    const letter = array[i];
+    if (obj[letter]) {
+      obj[letter]++;
+    } else {
+      obj[letter] = 1;
+    }
+  }
+  return obj;
 }
 
 // Call the init function to initialize the functionality
