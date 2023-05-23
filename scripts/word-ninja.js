@@ -6,21 +6,25 @@ const loadingDiv = document.querySelector(".info-bar");
 
 // Define the length of the answer
 const ANSWER_LENGTH = 5;
+const ROUNDS = 6;
 
 // Initialize the functionality
 async function init() {
   // Initialize the current guess as an empty string
   let currentGuess = "";
   let currentRow = 0;
+  let isLoading = true;
 
   // Fetch the word of the day from the API
   const res = await fetch("https://words.dev-apis.com/word-of-the-day");
   const resObj = await res.json();
   const word = resObj.word.toUpperCase();
   const wordParts = word.split("");
+  let done = false;
 
   // Set loading state to false
   setLoading(false);
+  isLoading = false;
 
   // Function to add a letter to the current guess
   function addLetter(letter) {
@@ -44,10 +48,12 @@ async function init() {
       return;
     }
 
-    if (currentGuess === word) {
-      alert("You win");
-      return;
-    }
+    isLoading = true;
+    setLoading(true);
+    const res = await fetch("https://words.dev-apis.com/validate-word", {
+      method: "POST",
+      body: JSON.stringify({ word: currentGuess }),
+    });
 
     const guessParts = currentGuess.split("");
     const map = makeMap(wordParts);
@@ -70,6 +76,15 @@ async function init() {
     }
 
     currentRow++;
+
+    if (currentGuess === word) {
+      alert("You win");
+      done = true;
+      return;
+    } else if (currentRow === ROUNDS) {
+      alert(`You lose, the word was ${word}`);
+      done = true;
+    }
     currentGuess = "";
   }
 
@@ -81,6 +96,9 @@ async function init() {
 
   // Event listener for keydown events
   document.addEventListener("keydown", function handleKeyPress(event) {
+    if (done || isLoading) {
+      return;
+    }
     const action = event.key;
     if (action === "Enter") {
       // If the Enter key is pressed, perform the commit action
