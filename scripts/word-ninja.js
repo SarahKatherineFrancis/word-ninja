@@ -16,7 +16,9 @@ async function init() {
   let isLoading = true;
 
   // Fetch the word of the day from the API
-  const res = await fetch("https://words.dev-apis.com/word-of-the-day");
+  const res = await fetch(
+    "https://words.dev-apis.com/word-of-the-day?random=1"
+  );
   const resObj = await res.json();
   const word = resObj.word.toUpperCase();
   const wordParts = word.split("");
@@ -69,6 +71,7 @@ async function init() {
     const guessParts = currentGuess.split("");
     const map = makeMap(wordParts);
 
+    // Check for correct letters in the guess
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       if (guessParts[i] === wordParts[i]) {
         letters[currentRow * ANSWER_LENGTH + i].classList.add("correct");
@@ -76,6 +79,7 @@ async function init() {
       }
     }
 
+    // Check for close and wrong letters in the guess
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       if (guessParts[i] === wordParts[i]) {
         // do nothing
@@ -88,11 +92,14 @@ async function init() {
 
     currentRow++;
 
+    // Check if the player has won
     if (currentGuess === word) {
-      alert("You win");
+      document.querySelector(".brand").classList.add("winner");
       done = true;
       return;
-    } else if (currentRow === ROUNDS) {
+    }
+    // Check if the player has lost
+    else if (currentRow === ROUNDS) {
       alert(`You lose, the word was ${word}`);
       done = true;
     }
@@ -105,6 +112,7 @@ async function init() {
     letters[ANSWER_LENGTH * currentRow + currentGuess.length].innerText = "";
   }
 
+  // Function to mark the current guess as an invalid word visually
   function markInvalidWord() {
     for (let i = 0; i < ANSWER_LENGTH; i++) {
       letters[currentRow * ANSWER_LENGTH + i].classList.remove("invalid");
@@ -145,6 +153,7 @@ function setLoading(isLoading) {
   loadingDiv.classList.toggle("hidden", !isLoading);
 }
 
+// Function to create a map of letters and their occurrences in an array
 function makeMap(array) {
   const obj = {};
   for (let i = 0; i < array.length; i++) {
