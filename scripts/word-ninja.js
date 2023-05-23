@@ -55,6 +55,17 @@ async function init() {
       body: JSON.stringify({ word: currentGuess }),
     });
 
+    const resObj = await res.json();
+    const validWord = resObj.validWord;
+
+    isLoading = false;
+    setLoading(false);
+
+    if (!validWord) {
+      markInvalidWord();
+      return;
+    }
+
     const guessParts = currentGuess.split("");
     const map = makeMap(wordParts);
 
@@ -92,6 +103,15 @@ async function init() {
   function backspace() {
     currentGuess = currentGuess.substring(0, currentGuess.length - 1);
     letters[ANSWER_LENGTH * currentRow + currentGuess.length].innerText = "";
+  }
+
+  function markInvalidWord() {
+    for (let i = 0; i < ANSWER_LENGTH; i++) {
+      letters[currentRow * ANSWER_LENGTH + i].classList.remove("invalid");
+      setTimeout(function () {
+        letters[currentRow * ANSWER_LENGTH + i].classList.add("invalid");
+      }, 10);
+    }
   }
 
   // Event listener for keydown events
